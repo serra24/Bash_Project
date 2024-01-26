@@ -1,28 +1,22 @@
 #!/usr/bin/bash
 
 database_folder="$(pwd)"
-
 current_database=""
 
-# Function to create a database
 create_database() {
   read -p "Enter database name: " new_database
 
-  if [ -d "$database_folder/$new_database" ]; then
-    echo "Database '$new_database' already exists."
+  # Validate the database name using a regular expression
+  if [[ "$new_database" =~ ^[a-zA-Z0-9_]+$ && ! "$new_database" =~ ^[[:space:]] ]]; then
+    if [ -d "$database_folder/$new_database" ]; then
+      echo "Error: Database '$new_database' already exists."
+    else
+      mkdir "$database_folder/$new_database"
+      echo "Database '$new_database' created."
+    fi
   else
-    mkdir "$database_folder/$new_database"
-    echo "Database '$new_database' created successfully."
+    echo "syntax error at or near '$new_database'"
   fi
-}
-
-
-# Function to list databases
-list_databases() {
-  echo "List of databases:"
-  for db in "$database_folder"/*; do
-    [ -d "$db" ] && echo "$(basename "$db")"
-  done
 }
 
 # Function to drop a database
@@ -32,7 +26,7 @@ drop_database() {
     rm -r "$database_folder/$drop_db"
     echo "Database '$drop_db' dropped successfully."
   else
-    echo "Database '$drop_db' not found."
+    echo "Error: Database '$drop_db' not found."
   fi
 }
 
@@ -41,9 +35,10 @@ connect_to_database() {
   read -p "Enter database name to connect: " connect_db
   if [ -d "$database_folder/$connect_db" ]; then
     current_database="$connect_db"
-    echo "Connected to database '$connect_db'."
+    cd "$database_folder/$connect_db" || exit
+    echo "Connected to database "
   else
-    echo "Database '$connect_db' not found."
+    echo "Error: Database '$connect_db' not found."
   fi
 }
 
@@ -76,7 +71,8 @@ while true; do
       exit 0
       ;;
     *)
-      echo "Invalid choice. Please try again."
+      echo "Error: Invalid choice. Please enter a valid option."
       ;;
   esac
 done
+
