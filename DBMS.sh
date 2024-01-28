@@ -22,7 +22,39 @@ create_database() {
   fi
 }
 
-# ... (other functions remain unchanged)
+
+
+# Function to list databases
+list_databases() {
+  echo "List of databases:"
+  for db in "$database_folder"/*; do
+    [ -d "$db" ] && echo "$(basename "$db")"
+  done
+}
+
+
+# Function to drop a database
+drop_database() {
+  read -p "Enter database name to drop: " drop_db
+  if [ -d "$database_folder/$drop_db" ]; then
+    rm -r "$database_folder/$drop_db"
+    echo "Database '$drop_db' dropped successfully."
+  else
+    echo "Error: Database '$drop_db' not found."
+  fi
+}
+
+# Function to connect to a database
+connect_to_database() {
+  read -p "Enter database name to connect: " connect_db
+  if [ -d "$database_folder/$connect_db" ]; then
+    current_database="$connect_db"
+    cd "$database_folder/$connect_db" || exit
+    echo "Connected to database "
+  else
+    echo "Error: Database '$connect_db' not found."
+  fi
+}
 
 # Main menu
 while true; do
