@@ -3,11 +3,14 @@
 database_folder="$(pwd)"
 current_database=""
 
+replace_spaces() {
+  # Replace spaces with underscores
+  echo "${1// /_}"
+}
+
 create_database() {
   read -p "Enter database name: " new_database
-
-  # Replace spaces with underscores in the database name
-  new_database="${new_database// /_}"
+  new_database=$(replace_spaces "$new_database")
 
   # Validate the database name using a regular expression
   if [[ "$new_database" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
@@ -22,20 +25,15 @@ create_database() {
   fi
 }
 
-
-
-# Function to list databases
 list_databases() {
   echo "List of databases:"
-  for db in "$database_folder"/*; do
-    [ -d "$db" ] && echo "$(basename "$db")"
-  done
+  ls -F "$database_folder" | grep '/$' | sed 's/\/$//'
 }
 
-
-# Function to drop a database
 drop_database() {
   read -p "Enter database name to drop: " drop_db
+  drop_db=$(replace_spaces "$drop_db")
+
   if [ -d "$database_folder/$drop_db" ]; then
     rm -r "$database_folder/$drop_db"
     echo "Database '$drop_db' dropped successfully."
@@ -44,9 +42,10 @@ drop_database() {
   fi
 }
 
-# Function to connect to a database
 connect_to_database() {
   read -p "Enter database name to connect: " connect_db
+  connect_db=$(replace_spaces "$connect_db")
+
   if [ -d "$database_folder/$connect_db" ]; then
     current_database="$connect_db"
     cd "$database_folder/$connect_db" || exit
@@ -56,7 +55,6 @@ connect_to_database() {
   fi
 }
 
-# Main menu
 while true; do
   echo -e "\nMenu:"
   echo "1. Create Database"
