@@ -1,5 +1,8 @@
 #!/usr/bin/bash
 
+mkdir DB 2>> /dev/null
+cd DB
+
 database_folder="$(pwd)"
 current_database=""
 current_table=""
@@ -28,7 +31,7 @@ create_database() {
 
 list_databases() {
   echo "List of databases:"
-  ls -F "$database_folder" | grep '/$' | sed 's/\/$//'
+  ls  "$database_folder" | grep '/$' | sed 's/\/$//'
 }
 
 drop_database() {
