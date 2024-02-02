@@ -31,8 +31,8 @@ create_database() {
 }
 
 list_databases() {
-  echo "List of databases:"
-  ls  "$database_folder" | grep '/$' | sed 's/\/$//'
+   echo "List of databases:"
+  ls -F "$database_folder" | grep / | tr / " "
 }
 
 drop_database() {
