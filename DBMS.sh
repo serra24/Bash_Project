@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+echo "Hello To DataBase Engine created by : Eng. Israa Lotfy & Eng.Hagar Serag" 
 
 mkdir DB 2>> /dev/null
 cd DB
