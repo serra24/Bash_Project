@@ -177,8 +177,6 @@ connect_to_database() {
     fi
 }
 
-
-
 list_tables() {
   echo "List of tables in database '$current_database':"
   for table in "$database_folder/$current_database"/*; do
@@ -267,7 +265,7 @@ insert_into_table() {
                 # if all done set full record in the table
                 echo -e $row"\c" >>$tableName
                 # check if Data Inserted Successfully
-                clear
+              
                 if [[ $? == 0 ]]; then
                     echo -e "\nData Inserted Successfully\n"
                 else
@@ -278,13 +276,19 @@ insert_into_table() {
             
 }
 
-
-
 drop_table() {
   read -p "Enter table name to drop: " drop_table
   drop_table=$(replace_spaces "$drop_table")
   if [ -f "$database_folder/$current_database/$drop_table" ]; then
+    # Remove the table file
     rm "$database_folder/$current_database/$drop_table"
+
+    # Remove the metadata file
+    metadata_file="$database_folder/$current_database/.$drop_table"
+    if [ -f "$metadata_file" ]; then
+      rm "$metadata_file"
+    fi
+
     echo "Table '$drop_table' dropped successfully."
   else
     echo "Error: Table '$drop_table' not found."
@@ -448,7 +452,7 @@ while true; do
   echo "2. List Databases"
   echo "3. Drop Database"
   echo "4. Connect to Database"
-  echo "5. Exit"
+  echo "5. Exit" 
 
   read -p "Enter your choice: " choice
 
